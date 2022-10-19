@@ -20,45 +20,51 @@ import csv
 
 
 class Panel:
-    def __init__(self,sigma=1.0,w=0.001,m=1.0):
+    def __init__(self,sigma=1.0,w=0.001,m=1.0,h = 29):
         self.sigma = sigma
         self.w=  w
         self.m = m 
-        
+        self.h = h
     def  betas(self,alpha):   
         return  10*(1-alpha)/(1+3*alpha)
     
-    def htilde(self,densa):
-        return densa*self.sigma**2
+    def htilde(self,dens):
+        return self.h*dens*self.sigma**2
 
-    def v1s(self,densa,alpha):
+    def v1s(self,dens,alpha):
         
         return 4 * self.w * np.sqrt( 1 + self.betas(alpha) ) / (np.sqrt(np.pi) *
-                    ( np.sqrt((1+self.betas(alpha))**2 + (4*np.sqrt(2)/15)*(1+alpha)*np.sqrt(1+self.betas(alpha))*(10+17*self.betas(alpha)-alpha*(10+9*self.betas(alpha)))*self.htilde(densa) )  -(1+self.betas(alpha) ) )  )
-    def v1s_wdes(self,densa,alpha):
+                    ( np.sqrt((1+self.betas(alpha))**2 + (4*np.sqrt(2)/15)*(1+alpha)*np.sqrt(1+self.betas(alpha))*(10+17*self.betas(alpha)-alpha*(10+9*self.betas(alpha)))*self.htilde(dens) )  -(1+self.betas(alpha) ) )  )
+    def v1s_wdes(self,dens,alpha):
             
         return 6 * self.w * ( 1 + self.betas(alpha) ) / (np.sqrt(2*np.pi) * (1+alpha) * 
-                     (2*(1-alpha)+(17-9*alpha)*self.betas(alpha)/5)*self.htilde(densa)       )
+                     (2*(1-alpha)+(17-9*alpha)*self.betas(alpha)/5)*self.htilde(dens)       )
 
-    def p(self,densa,alpha):
+    def p(self,dens,alpha):
         
-        return densa*self.m*0.5* (self.v1s(densa,alpha))**2
-    def pp(self,densa,alpha):
+        return dens*self.m*0.5* (self.v1s(dens,alpha))**2
+    def pp(self,dens,alpha):
             
-        return densa*self.m*0.5* (self.v1s_wdes(densa,alpha))**2
+        return dens*self.m*0.5* (self.v1s_wdes(dens,alpha))**2
 fig23=plt.figure()
 
 
-densa = np.linspace(0.0001, 0.02, 10000)
-# densa  = 0.02 
-alpha = 0.8
-# alpha = np.linspace(0.01,0.999,10000)
+# dens = np.linspace(1.5, 4.5, 1000)
 
+dens = np.linspace(0.001, 0.009, 1000)
+# dens  = 0.02 
 w = 0.001
+sigma = 1.0
+h = 29*sigma
+m = 1.0
+alpha = 0.9
+# alpha = np.linspace(0.80,0.975,10000)
 
-# plt.plot(alpha,Panel(1.0,0.001,1.0).p(densa,alpha),linewidth=1.5,linestyle=":",color="C0",label=" $p$  "  )
-plt.plot(densa,Panel(1.0,w,1.0).p(densa,alpha),linewidth=1.5,color="C0",label=" $p$  "  )
-plt.plot(densa,Panel(1.0,w,1.0).pp(densa,alpha),linewidth=1.5,linestyle=":",color="C1",label=" $p$ approx  "  )
+
+
+# plt.plot(alpha,Panel(1.0,0.001,1.0).p(dens,alpha),linewidth=1.5,linestyle=":",color="C0",label=" $p$  "  )
+plt.plot(dens,Panel(1.0,w,1.0,29).v1s(dens,alpha)/w,linewidth=1.5,color="C0",label=" $v1s$  "  )
+plt.plot(dens,Panel(1.0,w,1.0,29).v1s_wdes(dens,alpha)/w,linewidth=1.5,linestyle=":",color="C1",label=" $v1s$ approx  "  )
 
 # plt.yscale("log")
 plt.grid(color='k', linestyle='--', linewidth=0.5,alpha=0.2)
