@@ -18,6 +18,13 @@ from sympy import *
 # PARA USAR A LA HORA DE GUARDAR DOS COLUMNAS EN UN ARCHIVO
 import csv
 
+tvsd= pd.read_csv("temp_vs_DenPart.dat",header=0,sep='\s+')
+
+# tvsd.columns = tvsd.iloc[0]
+
+# T = tvsd['Ts1']
+print(tvsd['Ts1'])
+
 
 class Panel:
     def __init__(self,sigma=1.0,w=0.001,m=1.0,h = 29):
@@ -51,7 +58,7 @@ fig23=plt.figure()
 
 # dens = np.linspace(1.5, 4.5, 1000)
 
-dens = np.linspace(0.001, 0.009, 1000)
+dens = np.linspace(0.005 , max(tvsd['#denPart']) , 1000)
 # dens  = 0.02 
 w = 0.001
 sigma = 1.0
@@ -63,15 +70,17 @@ alpha = 0.9
 
 
 # plt.plot(alpha,Panel(1.0,0.001,1.0).p(dens,alpha),linewidth=1.5,linestyle=":",color="C0",label=" $p$  "  )
-plt.plot(dens,Panel(1.0,w,1.0,29).v1s(dens,alpha)/w,linewidth=1.5,color="C0",label=" $v1s$  "  )
-plt.plot(dens,Panel(1.0,w,1.0,29).v1s_wdes(dens,alpha)/w,linewidth=1.5,linestyle=":",color="C1",label=" $v1s$ approx  "  )
+plt.plot(tvsd['#denPart'],tvsd['Ts1'],marker= 'o',linestyle = 'None',color="C2",label=" $v_{1}^s/\omega$ (MD) "  )
+
+plt.plot(dens,Panel(1.0,2*w,1.0,29).v1s(dens,alpha)/(2*w),linewidth=1.5,color="C0",label=" $v_{1}^s/\omega$  "  )
+plt.plot(dens,Panel(1.0,2*w,1.0,29).v1s_wdes(dens,alpha)/(2*w),linewidth=1.5,linestyle=":",color="C1",label=" $v_{1}^s/\omega$ $O(w^2)$  "  )
 
 # plt.yscale("log")
 plt.grid(color='k', linestyle='--', linewidth=0.5,alpha=0.2)
 
-plt.ylabel ( r' $p$ ',rotation=0.0,fontsize=30)
+plt.ylabel ( r'  ',rotation=0.0,fontsize=30)
 
-plt.xlabel( r' $N/L^2$ ', fontsize=30)
+plt.xlabel( r' $n$ ', fontsize=30)
 
 plt.xticks(fontsize=20)
 plt.yticks(fontsize=20)
