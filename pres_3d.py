@@ -17,13 +17,11 @@ from sympy import *
 
 # PARA USAR A LA HORA DE GUARDAR DOS COLUMNAS EN UN ARCHIVO
 import csv
-
+# !!  hay que ver que no aparezcan espacios en los enunciados, ya que si no contará columnas extras
 tvsd= pd.read_csv("temp_vs_DenPart-1.dat",header=0,sep = '\s+', names=["den","ts","err"])
 
 # tvsd.columns = tvsd.iloc[0]
 
-# T = tvsd['Ts1']
-print(tvsd['den'])
 
 
 class Panel:
