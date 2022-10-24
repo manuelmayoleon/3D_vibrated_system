@@ -18,12 +18,12 @@ from sympy import *
 # PARA USAR A LA HORA DE GUARDAR DOS COLUMNAS EN UN ARCHIVO
 import csv
 
-tvsd= pd.read_csv("temp_vs_DenPart.dat",header=0,sep='\s+')
+tvsd= pd.read_csv("temp_vs_DenPart-1.dat",header=0,sep = '\s+', names=["den","ts","err"])
 
 # tvsd.columns = tvsd.iloc[0]
 
 # T = tvsd['Ts1']
-print(tvsd['Ts1'])
+print(tvsd['den'])
 
 
 class Panel:
@@ -58,7 +58,7 @@ fig23=plt.figure()
 
 # dens = np.linspace(1.5, 4.5, 1000)
 
-dens = np.linspace(0.005 , max(tvsd['#denPart']) , 1000)
+dens = np.linspace(0.005 , max(tvsd['den']) , 1000)
 # dens  = 0.02 
 w = 0.001
 sigma = 1.0
@@ -70,8 +70,9 @@ alpha = 0.9
 
 
 # plt.plot(alpha,Panel(1.0,0.001,1.0).p(dens,alpha),linewidth=1.5,linestyle=":",color="C0",label=" $p$  "  )
-plt.plot(tvsd['#denPart'],tvsd['Ts1'],marker= 'o',linestyle = 'None',color="C2",label=" $v_{1}^s/\omega$ (MD) "  )
+# plt.plot(tvsd['den'],tvsd['Ts1'],marker= 'o',linestyle = 'None',color="C2",label=" $v_{1}^s/\omega$ (MD) "  )
 
+plt.errorbar(tvsd['den'], tvsd['ts'], yerr=tvsd['err'], color='C2',marker="o",linestyle="",label="$n_z$ (MD)") 
 plt.plot(dens,Panel(1.0,2*w,1.0,29).v1s(dens,alpha)/(2*w),linewidth=1.5,color="C0",label=" $v_{1}^s/\omega$  "  )
 plt.plot(dens,Panel(1.0,2*w,1.0,29).v1s_wdes(dens,alpha)/(2*w),linewidth=1.5,linestyle=":",color="C1",label=" $v_{1}^s/\omega$ $O(w^2)$  "  )
 
