@@ -20,6 +20,9 @@ from sympy import *
 
 import csv
 
+from scipy.optimize import root, fsolve
+
+
 ba= pd.read_csv("b_a.txt",header=None,sep='\s+',names=["alpha","beta"])
 ba_sim8 = pd.read_csv("dataBeta/beta_H8.dat",header=0,sep='\s+')
 ba_sim10 = pd.read_csv("dataBeta/beta_H10.dat",header=0,sep='\s+')
@@ -30,24 +33,34 @@ ba_sim29 = pd.read_csv("dataBeta/beta_H29.dat",header=0,sep='\s+')
 
 betas = np.linspace(0.01,10.0,1000)
 alpha = np.linspace(0.010,1.000,1000)
+class Panel:
+    def __init__(self,a=0.950):
+        self.a = a
 
+    def polinomio(self,b):
+        return np.sqrt(b+1)*(4 * ( 1 + self.a ) * b ** 2 + ( 16 * self.a - 8 ) * b + ( 9 - 3 * self.a ) )/( ( 30 - 18 * self.a) * b + ( 9 -3 * self.a ) )
+    def  bets_1(alpha):   
+            return  10*(1-alpha)/(1+3*alpha)
+            # return 32*(1-a)/(5+9*a)
+    def  bets_2(alpha):   
+            # return  10*(1-a)/(1+3*a)
+            return 32*(1-alpha)/(5+9*alpha)
+    def transcendental_eq(self,b):
+        return  np.sqrt(b+1)*(4 * ( 1 + self.a ) * b ** 2 + ( 16 * self.a - 8 ) * b + ( 9 - 3 * self.a ) )/( ( 30 - 18 * self.a) * b + ( 9 -3 * self.a ) )- np.arcsinh(np.sqrt(b))/np.sqrt(b)
+# def f(x):
+#     c = polinomio(x[0],x[1])- np.arcsinh(np.sqrt(x[1]))/np.sqrt(x[1])
+#     d = x[0]
+#     return [c, d]
 
-def polinomio(a,b):
-    return np.sqrt(b+1)*(4 * ( 1 + a ) * b ** 2 + ( 16 * a - 8 ) * b + ( 9 - 3 * a ) )/( ( 30 - 18 * a) * b + ( 9 -3 * a ) )
-def  bets_1(a):   
-        return  10*(1-a)/(1+3*a)
-        # return 32*(1-a)/(5+9*a)
-def  bets_2(a):   
-        # return  10*(1-a)/(1+3*a)
-        return 32*(1-a)/(5+9*a)
+sol = np.zeros(len(alpha))    
+i=0
+for x in alpha:
     
 
-
-    
-
-    
-# fig1=plt.figure()
-
+    sol[i] = fsolve(Panel(x).transcendental_eq ,[4.0] )
+    i+=1
+    # print(result.x)
+# print(sol)
 
 # plt.plot(betas,np.arcsinh(np.sqrt(betas))/np.sqrt(betas),color= "C0")
 
@@ -92,9 +105,12 @@ def  bets_2(a):
 
 fig, ax1=plt.subplots(figsize=(14,8))
 
-ax1.plot(alpha,bets_1(alpha) ,linewidth=1.5,color="C1" )
+# ax1.plot(alpha,Panel.bets_1(alpha) ,linewidth=1.5,color="C1" )
 
-ax1.plot(alpha,bets_2(alpha) ,linewidth=1.5,color="C2")
+# ax1.plot(alpha,Panel.bets_2(alpha) ,linewidth=1.5,color="C2")
+ax1.plot(alpha,sol ,linewidth=1,linestyle= "",color="C10")
+
+# plt.plot(betas,np.arcsinh(np.sqrt(betas))/np.sqrt(betas),color= "C0")
 
 ax1.plot(ba['alpha'],ba['beta'],linestyle = ":",color= "C0")
 
@@ -131,11 +147,13 @@ ax2.set_axes_locator(ip)
 # mark_inset(ax1, ax2, loc1=2, loc2=4, fc="none", ec='0.5')
 
 # The data: only display for low temperature in the inset figure.
-ax2.plot(alpha,bets_1(alpha) ,linewidth=1.5,color="C1", label= r"$\beta_s$  $\mathcal{O}(\beta^2)$ integral aprox." )
+ax2.plot(alpha,Panel.bets_1(alpha) ,linewidth=1.5,color="C1", label= r"$\beta_s$  $\mathcal{O}(\beta^2)$ integral aprox." )
 
-ax2.plot(alpha,bets_2(alpha) ,linewidth=1.5,color="C2",label= r"$\beta_s$  $\mathcal{O}(\beta^2)$ integral exacta" )
+ax2.plot(alpha,Panel.bets_2(alpha) ,linewidth=1.5,color="C2",label= r"$\beta_s$  $\mathcal{O}(\beta^2)$ integral exacta" )
 
-ax2.plot(ba['alpha'],ba['beta'],linestyle = ":",color= "C0")
+ax2.plot(ba['alpha'],ba['beta'],linewidth=1.5,linestyle = ":",color= "C0",label = r"$\beta_s$  exacta (sol. gráfica)")
+
+ax2.plot(alpha,sol ,linewidth=1.5,linestyle= "",color="C10",label = r"$\beta_s$  integral exacta" )
 
 ax2.errorbar(ba_sim8['alpha'], ba_sim8['beta'], yerr=ba_sim8['errorbeta'], color='C3',marker="o",linestyle="",label=r"$\beta_s$, $h= 8\sigma$ (MD)") 
 ax2.errorbar(ba_sim10['alpha'], ba_sim10['beta'], yerr=ba_sim10['errorbeta'], color='C4',marker="o",linestyle="",label=r"$\beta_s$, $h= 10\sigma$ (MD)") 
