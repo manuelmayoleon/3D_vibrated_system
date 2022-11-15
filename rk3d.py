@@ -51,7 +51,7 @@ time = temp['time'][0:100]
 x0= txy_ini
 y0=tz_ini
 a=0
-b=int(time[len(time)-1])
+b=time[len(time)-1]
 
 
 
@@ -96,12 +96,26 @@ class Panel:
 sol = solve_ivp(Panel.coupled, [a, b], [x0, y0], args=(alfa, rho, w, altura),
                     dense_output=True)
 
-print(sol.y[0])
-# print(sol.x)
-print(sol.t)
-plt.plot(sol.t,sol.y[0],color='C4',linestyle=":",label="$T_{xy}$ ")
+# print(sol.y[0])
+# # print(sol.x)
+# print(sol.t)
 
-plt.plot(sol.t,sol.y[1],color='C5',linestyle=":",label="$T_{z}$ ")
+t = np.linspace(0, b, 300)
+
+
+
+
+z = sol.sol(t)
+
+print(z)
+
+txysol= z[0]
+tzsol= z[1] 
+
+
+plt.plot(t,txysol,color='C4',linestyle=":",label="$T_{xy}$ ")
+
+plt.plot(t,tzsol,color='C5',linestyle=":",label="$T_{z}$ ")
 
 #     # return -4.0*epsilon**3.0*rho*np.sqrt(tx)*( ty -tx )/(3.0*np.sqrt(np.pi))
 # #?? Representacion en funcion de las colisiones por particula
