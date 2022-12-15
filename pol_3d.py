@@ -66,6 +66,7 @@ class Panel:
     def vsw(self,dens,alpha):
         
         return  0.25*self.a1(dens,alpha)*self.a2(dens,alpha)+ 6.32455532033676e-8*np.sqrt(self.a1(dens,alpha)*(15625000000000.0*self.a1(dens,alpha)*self.a2(dens,alpha)**2 + 141047395886939.0))
+    
     def vsw_mano(self,dens,alpha):
             
         return self.b1(dens,alpha)*np.sqrt(self.betas(alpha)+1)/2 *( 1 + np.sqrt( 1 + ( 8 ) / ( ( 1 + self.betas( alpha ) ) * self.b1( dens , alpha ) * np.sqrt( np.pi ) )  ) )
@@ -133,7 +134,8 @@ plt.xlabel( r' $\alpha$ ', fontsize=30)
 
 plt.xticks(fontsize=20)
 plt.yticks(fontsize=20)
-
+plt.ylim(0,700)
+plt.xlim(0.60,1.00)
 plt.title ( r' \textbf {Temperatura como función de $\alpha$}' ,fontsize=40)
 plt.legend(loc=0,fontsize=30)
 

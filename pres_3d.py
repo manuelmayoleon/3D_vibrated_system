@@ -19,6 +19,7 @@ from sympy import *
 import csv
 # !!  hay que ver que no aparezcan espacios en los enunciados, ya que si no contará columnas extras
 tvsd= pd.read_csv("temp_vs_DenPart-1.dat",header=0,sep = '\s+', names=["den","ts","err"])
+# ba= pd.read_csv("b_a.txt",header=None,sep='\s+',names=["alpha","beta"])
 
 # tvsd.columns = tvsd.iloc[0]
 
@@ -86,5 +87,5 @@ plt.yticks(fontsize=20)
 
 plt.title ( r' \textbf {Presión como función de la densidad}' ,fontsize=40)
 plt.legend(loc=0,fontsize=30)
-
+plt.tight_layout()
 plt.show()
