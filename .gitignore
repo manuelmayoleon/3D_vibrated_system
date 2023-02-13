@@ -7,6 +7,11 @@ node_modules
 # Ignora todos los archivos de texto
 *.txt
 *.dat
+*.pdf
+*.eps
+*.png
+*.jpg
+*.csv*
 # Ignora los archivos relacionados a API keys
 .env
 
